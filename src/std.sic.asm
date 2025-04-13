@@ -21,6 +21,13 @@ pcloop	TD	#1
 	WD	#1
 	J	popr
 
+readchar
+	TD	#0
+	JEQ	readchar
+	RD	#0
+	JSUB	push
+	J	popr
+
 ... stdlib ...
 qtemp	RESW	1
 

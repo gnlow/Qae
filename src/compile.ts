@@ -164,6 +164,7 @@ export const compile =
                 if ([
                     "print",
                     "printchar",
+                    "readchar",
                 ].includes(funcName!)) {
                     pushInst("", "JSUB", funcName!)
                 } else {

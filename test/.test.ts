@@ -145,3 +145,13 @@ Deno.test("if", async () => {
         "yesxxx",
     )
 })
+
+Deno.test("read", async () => {
+    assertEquals(
+        await run(`
+            printchar(readchar())
+            printchar(readchar())
+        `, "hi"),
+        "hi",
+    )
+})
