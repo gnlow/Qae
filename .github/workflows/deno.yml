@@ -33,6 +33,8 @@ jobs:
 
       - name: Setup Java
         uses: actions/setup-java@v4.7.1
+        with:
+          distribution: temurin
 
       - name: Download SicTools
         run: curl -o ~/Downloads/sictools.jar https://github.com/jurem/SicTools/releases/download/v2.2.0/sictools.jar
