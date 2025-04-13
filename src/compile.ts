@@ -84,7 +84,18 @@ export const compile =
             },
             FunctionCall() {
                 const funcName = walk(node.node.getChild("Identifier")!)!
+
+                if (funcName == "resw" || funcName == "resb") {
+                    const child = node.node.getChild("Expression")!
+                    const size = Number(code.slice(child.from, child.to))
+                    const varName = getVarName(table.length)
+                    addSymbol(`${funcName.toUpperCase()}\t${size}`)
+
+                    return "#"+varName
+                }
+
                 const params = node.node.getChildren("Expression").map(walk)
+
                 params.forEach(pushRef)
                 pushInst("", "JSUB", "pushr")
                 pushInst("", "JSUB", funcName)
