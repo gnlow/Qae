@@ -31,6 +31,12 @@ jobs:
       - name: Generate Parser
         run: bash gen.sh
 
+      - name: Setup Java
+        uses: actions/setup-java@v4.7.1
+
+      - name: Download SicTools
+        run: curl -o ~/Downloads/sictools.jar https://github.com/jurem/SicTools/releases/download/v2.2.0/sictools.jar
+
       # Uncomment this step to verify the use of 'deno fmt' on each commit.
       # - name: Verify formatting
       #   run: deno fmt --check
