@@ -6,11 +6,11 @@ Deno.test("echo", async () => {
         await run(`
             c = readchar()
 
-            while (c != ';') {
+            while (c != 10) {
                 printchar(c)
                 c = readchar()
             }
-        `, "Hello, World!;"),
+        `, "Hello, World!\n"),
         "Hello, World!",
     )
 })
