@@ -85,12 +85,15 @@ export const compile =
                 const loopName = "loop"+getVarName(labels++)
                 main.push(loopName)
                 const cond = walk(node.node.getChild("Expression")!)
-
-                walk(node.node.getChild("Block")!)
-
+                pushRef(cond)
                 pushInst("", "JSUB", "pop")
                 pushInst("", "COMP", "#1")
-                pushInst("", "JLT", loopName)
+                pushInst("", "JLT", loopName+"end")
+                
+                walk(node.node.getChild("Block")!)
+
+                pushInst("", "J", loopName)
+                pushInst(loopName+"end", "TIO", "")
             },
             FunctionDef() {
                 const funcName = "fn"+getVarName(anonFuncs++)

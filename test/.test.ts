@@ -104,7 +104,6 @@ Deno.test("lambda", async () => {
     )
 })
 
-
 Deno.test("logic", async () => {
     assertEquals(
         await run(`
@@ -112,5 +111,18 @@ Deno.test("logic", async () => {
             printchar(65 + (2 < 3))
         `),
         "AB",
+    )
+})
+
+Deno.test("while", async () => {
+    assertEquals(
+        await run(`
+            i = 0
+            while (i < 4) {
+                printchar(65+i)
+                i = i + 1
+            }
+        `),
+        "ABCD",
     )
 })
