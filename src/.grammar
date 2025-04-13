@@ -6,7 +6,8 @@
   times @left,
   plus @left,
 
-  rel @left
+  rel @left,
+  logic @left
 }
 
 kw<term> { @specialize[@name={term}]<Identifier, term> }
@@ -64,7 +65,8 @@ CompareOp { "<" | "<=" | ">" | ">=" | "==" | "!=" }
 BinaryExpression {
   Expression !times Op { "/" | "%" | "*" } Expression |
   Expression !plus Op { "+" | "-" } Expression |
-  Expression !rel Op { CompareOp } Expression
+  Expression !rel Op { CompareOp } Expression |
+  Expression !logic Op { "&" | "|" } Expression
 }
 
 FunctionCall {

@@ -104,11 +104,21 @@ Deno.test("lambda", async () => {
     )
 })
 
-Deno.test("logic", async () => {
+Deno.test("comp", async () => {
     assertEquals(
         await run(`
             printchar(65 + (2 > 3))
             printchar(65 + (2 < 3))
+        `),
+        "AB",
+    )
+})
+
+Deno.test("logic", async () => {
+    assertEquals(
+        await run(`
+            printchar(65 + (1 > 2 & 2 > 1))
+            printchar(65 + (1 > 2 | 2 > 1))
         `),
         "AB",
     )

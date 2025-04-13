@@ -124,6 +124,20 @@ qgte	JSUB	qqpop
 	JEQ	qo
 	J	qx
 
+qand	JSUB	qqpop
+	STA	qqqb
+	JSUB	qqpop
+	AND	qqqb
+	JSUB	qqpush
+	J	qqpopr
+
+qor	JSUB	qqpop
+	STA	qqqb
+	JSUB	qqpop
+	OR	qqqb
+	JSUB	qqpush
+	J	qqpopr
+
 qqqb	RESW	1
 
 ...

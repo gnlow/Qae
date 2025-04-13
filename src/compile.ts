@@ -184,6 +184,8 @@ export const compile =
                     "<=": "qlte",
                     ">": "qgt",
                     ">=": "qgte",
+                    "&": "qand",
+                    "|": "qor",
                 }[op]!
 
                 const params = node.node.getChildren("Expression").map(walk)
