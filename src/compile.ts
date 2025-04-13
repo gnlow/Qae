@@ -16,7 +16,7 @@ const getVarName =
 }
 
 const init =
-`	LDA	#myst
+`	LDA	#qqmyst
 	JSUB	stinit
 	JSUB	stinitr`
 
@@ -39,13 +39,13 @@ export const compile =
     (ref: string | undefined) => {
         if (ref) {
             pushInst("", "LDA", ref)
-            pushInst("", "JSUB", "push")
+            pushInst("", "JSUB", "qqpush")
         }
     }
 
     const popRef =
     (ref: string) => {
-        pushInst("", "JSUB", "pop")
+        pushInst("", "JSUB", "qqpop")
         pushInst("", "STA", ref)
     }
 
@@ -66,9 +66,9 @@ export const compile =
                 if (atNode) {
                     pushRef(id)
                     pushRef(walk(atNode))
-                    pushInst("", "JSUB", "pushr")
+                    pushInst("", "JSUB", "qqpushr")
                     pushInst("", "JSUB", "qadd")
-                    popRef("qtemp")
+                    popRef("qqtemp")
                 }
                 const value = walk(node.node.getChild("Expression")!)
                 if (!table.find(x => x.startsWith(`${id}\t`))) {
@@ -76,7 +76,7 @@ export const compile =
                 }
                 pushRef(value)
                 if (atNode) {
-                    popRef("@qtemp")
+                    popRef("@qqtemp")
                 } else {
                     popRef(id)
                 }
@@ -86,7 +86,7 @@ export const compile =
                 main.push(loopName)
                 const cond = walk(node.node.getChild("Expression")!)
                 pushRef(cond)
-                pushInst("", "JSUB", "pop")
+                pushInst("", "JSUB", "qqpop")
                 pushInst("", "COMP", "#1")
                 pushInst("", "JLT", loopName+"end")
                 
@@ -102,7 +102,7 @@ export const compile =
                 main.push(ifName)
                 const cond = walk(node.node.getChild("Expression")!)
                 pushRef(cond)
-                pushInst("", "JSUB", "pop")
+                pushInst("", "JSUB", "qqpop")
                 pushInst("", "COMP", "#1")
                 pushInst("", "JLT", ifName+"else")
 
@@ -140,7 +140,7 @@ export const compile =
                 })
                 walk(node.node.getChild("Block")!)
 
-                pushInst("", "JSUB", "popr")
+                pushInst("", "JSUB", "qqpopr")
                 main.push(funcName+"end")
 
                 return "#"+funcName
@@ -160,7 +160,7 @@ export const compile =
                 }
 
                 params.forEach(pushRef)
-                pushInst("", "JSUB", "pushr")
+                pushInst("", "JSUB", "qqpushr")
                 if ([
                     "print",
                     "printchar",
@@ -188,7 +188,7 @@ export const compile =
                 const params = node.node.getChildren("Expression").map(walk)
 
                 params.forEach(pushRef)
-                pushInst("", "JSUB", "pushr")
+                pushInst("", "JSUB", "qqpushr")
                 pushInst("", "JSUB", funcName)
             },
             ExpressionStatement() {
@@ -200,10 +200,10 @@ export const compile =
                 if (atNode) {
                     pushRef(id)
                     pushRef(walk(atNode))
-                    pushInst("", "JSUB", "pushr")
+                    pushInst("", "JSUB", "qqpushr")
                     pushInst("", "JSUB", "qadd")
-                    popRef("qtemp")
-                    return "@qtemp"
+                    popRef("qqtemp")
+                    return "@qqtemp"
                 }
                 return id
             },

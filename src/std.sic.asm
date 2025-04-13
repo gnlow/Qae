@@ -1,116 +1,116 @@
 ... stdio ...
-print	JSUB	pop
-	STA	prp
+print	JSUB	qqpop
+	STA	qqprp
 ploop	TD	#1
 	JEQ	ploop
-	LDCH	@prp
+	LDCH	@qqprp
 	COMP	#0x3B
-	JEQ	popr
+	JEQ	qqpopr
 	WD	#1
-	LDA	prp
+	LDA	qqprp
 	ADD	#1
-	STA	prp
+	STA	qqprp
 	J	ploop
 
-prp	RESW	1
+qqprp	RESW	1
 
 printchar
-	JSUB	pop
+	JSUB	qqpop
 pcloop	TD	#1
 	JEQ	pcloop
 	WD	#1
-	J	popr
+	J	qqpopr
 
 readchar
 	TD	#0
 	JEQ	readchar
 	RD	#0
-	JSUB	push
-	J	popr
+	JSUB	qqpush
+	J	qqpopr
 
 ... stdlib ...
-qtemp	RESW	1
+qqtemp	RESW	1
 
 ...
-stinit	STA	sp
+stinit	STA	qqsp
 	RSUB
 
-push	STA	@sp
-	LDA	sp
+qqpush	STA	@qqsp
+	LDA	qqsp
 	ADD	#3
-	STA	sp
+	STA	qqsp
 	RSUB
 
-pop	LDA	sp
+qqpop	LDA	qqsp
 	SUB	#3
-	STA	sp
-	LDA	@sp
+	STA	qqsp
+	LDA	@qqsp
 	RSUB
 
-sp	RESW	1
+qqsp	RESW	1
 
 ...
-qadd	JSUB	pop
+qadd	JSUB	qqpop
 	STA	qqqb
-	JSUB	pop
+	JSUB	qqpop
 	ADD	qqqb
-	JSUB	push
-	J	popr
+	JSUB	qqpush
+	J	qqpopr
 
-qsub	JSUB	pop
+qsub	JSUB	qqpop
 	STA	qqqb
-	JSUB	pop
+	JSUB	qqpop
 	SUB	qqqb
-	JSUB	push
-	J	popr
+	JSUB	qqpush
+	J	qqpopr
 
-qmul	JSUB	pop
+qmul	JSUB	qqpop
 	STA	qqqb
-	JSUB	pop
+	JSUB	qqpop
 	MUL	qqqb
-	JSUB	push
-	J	popr
+	JSUB	qqpush
+	J	qqpopr
 
 qo	LDA	#1
-	JSUB	push
-	J	popr
+	JSUB	qqpush
+	J	qqpopr
 
 qx	LDA	#0
-	JSUB	push
-	J	popr
+	JSUB	qqpush
+	J	qqpopr
 
-qeq	JSUB	pop
+qeq	JSUB	qqpop
 	STA	qqqb
-	JSUB	pop
+	JSUB	qqpop
 	COMP	qqqb
 	JEQ	qo
 	J	qx
 
-qlt	JSUB	pop
+qlt	JSUB	qqpop
 	STA	qqqb
-	JSUB	pop
+	JSUB	qqpop
 	COMP	qqqb
 	JLT	qo
 	J	qx
 
-qlte	JSUB	pop
+qlte	JSUB	qqpop
 	STA	qqqb
-	JSUB	pop
+	JSUB	qqpop
 	COMP	qqqb
 	JLT	qo
 	JEQ	qo
 	J	qx
 
-qgt	JSUB	pop
+qgt	JSUB	qqpop
 	STA	qqqb
-	JSUB	pop
+	JSUB	qqpop
 	COMP	qqqb
 	JGT	qo
 	J	qx
 
-qgte	JSUB	pop
+qgte	JSUB	qqpop
 	STA	qqqb
-	JSUB	pop
+	JSUB	qqpop
 	COMP	qqqb
 	JGT	qo
 	JEQ	qo
@@ -120,25 +120,25 @@ qqqb	RESW	1
 
 ...
 stinitr	LDA	#retadr
-	STA	spr
+	STA	qqspr
 	RSUB
 
-pushr	STL	@spr
-	LDA	@spr
+qqpushr	STL	@qqspr
+	LDA	@qqspr
 	ADD	#3
-	STA	@spr
+	STA	@qqspr
 
-	LDA	spr
+	LDA	qqspr
 	ADD	#3
-	STA	spr
+	STA	qqspr
 	RSUB
 
-popr	LDA	spr
+qqpopr	LDA	qqspr
 	SUB	#3
-	STA	spr
-	LDL	@spr
+	STA	qqspr
+	LDL	@qqspr
 	RSUB
 
-spr	RESW	1
+qqspr	RESW	1
 retadr	RESW	20
-myst	RESW	20
+qqmyst	RESW	20
