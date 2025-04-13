@@ -103,3 +103,14 @@ Deno.test("lambda", async () => {
         "KLM",
     )
 })
+
+
+Deno.test("logic", async () => {
+    assertEquals(
+        await run(`
+            printchar(65 + (2 > 3))
+            printchar(65 + (2 < 3))
+        `),
+        "AB",
+    )
+})

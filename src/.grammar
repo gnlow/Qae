@@ -13,6 +13,7 @@ kw<term> { @specialize[@name={term}]<Identifier, term> }
 
 Statement {
   IfStatement |
+  WhileStatement |
   Assignment |
   ExpressionStatement
 }
@@ -24,6 +25,10 @@ FunctionDef {
 IfStatement {
   kw<"if"> "(" Expression ")" Block
   (kw<"else"> Block)?
+}
+
+WhileStatement {
+  kw<"while"> "(" Expression ")" Block
 }
 
 Assignment {

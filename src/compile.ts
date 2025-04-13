@@ -55,6 +55,7 @@ export const compile =
     }
 
     let anonFuncs = 0
+    let labels = 0
 
     const walk =
     (node: SyntaxNodeRef | SyntaxNode): string | undefined => {
@@ -79,6 +80,17 @@ export const compile =
                 } else {
                     popRef(id)
                 }
+            },
+            WhileStatement() {
+                const loopName = "loop"+getVarName(labels++)
+                main.push(loopName)
+                const cond = walk(node.node.getChild("Expression")!)
+
+                walk(node.node.getChild("Block")!)
+
+                pushInst("", "JSUB", "pop")
+                pushInst("", "COMP", "#1")
+                pushInst("", "JLT", loopName)
             },
             FunctionDef() {
                 const funcName = "fn"+getVarName(anonFuncs++)
@@ -141,6 +153,10 @@ export const compile =
                     "-": "qsub",
                     "*": "qmul",
                     "==": "qeq",
+                    "<": "qlt",
+                    "<=": "qlte",
+                    ">": "qgt",
+                    ">=": "qgte",
                 }[op]!
 
                 const params = node.node.getChildren("Expression").map(walk)

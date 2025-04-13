@@ -23,7 +23,6 @@ pcloop	TD	#1
 
 ... stdlib ...
 qtemp	RESW	1
-myst	RESW	100
 
 ...
 stinit	STA	sp
@@ -65,6 +64,51 @@ qmul	JSUB	pop
 	JSUB	push
 	J	popr
 
+qo	LDA	#1
+	JSUB	push
+	J	popr
+
+qx	LDA	#0
+	JSUB	push
+	J	popr
+
+qeq	JSUB	pop
+	STA	qqqb
+	JSUB	pop
+	COMP	qqqb
+	JEQ	qo
+	J	qx
+
+qlt	JSUB	pop
+	STA	qqqb
+	JSUB	pop
+	COMP	qqqb
+	JLT	qo
+	J	qx
+
+qlte	JSUB	pop
+	STA	qqqb
+	JSUB	pop
+	COMP	qqqb
+	JLT	qo
+	JEQ	qo
+	J	qx
+
+qgt	JSUB	pop
+	STA	qqqb
+	JSUB	pop
+	COMP	qqqb
+	JGT	qo
+	J	qx
+
+qgte	JSUB	pop
+	STA	qqqb
+	JSUB	pop
+	COMP	qqqb
+	JGT	qo
+	JEQ	qo
+	J	qx
+
 qqqb	RESW	1
 
 ...
@@ -89,4 +133,5 @@ popr	LDA	spr
 	RSUB
 
 spr	RESW	1
-retadr	RESW	100
+retadr	RESW	20
+myst	RESW	20
