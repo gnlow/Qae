@@ -1,9 +1,9 @@
 import { compile } from "../../src/compile.ts"
 
 export const debug =
-async (code: string) => {
+async (code: string, input = "") => {
     const command = new Deno.Command("bash", {
-        args: [ "debug.sh" ],
+        args: [ "debug.sh", input ],
         stdin: "piped",
     })
 

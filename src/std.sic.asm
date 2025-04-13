@@ -22,6 +22,7 @@ pcloop	TD	#1
 	J	qqpopr
 
 readchar
+	CLEAR	A
 	TD	#0
 	JEQ	readchar
 	RD	#0
