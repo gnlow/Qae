@@ -95,6 +95,28 @@ export const compile =
                 pushInst("", "J", loopName)
                 pushInst(loopName+"end", "TIO", "")
             },
+            IfStatement() {
+                const ifName = "block"+getVarName(labels++)
+
+                const [ifBlock, elseBlock] = node.node.getChildren("Block")!
+                main.push(ifName)
+                const cond = walk(node.node.getChild("Expression")!)
+                pushRef(cond)
+                pushInst("", "JSUB", "pop")
+                pushInst("", "COMP", "#1")
+                pushInst("", "JLT", ifName+"else")
+
+                walk(ifBlock!)
+
+                if (elseBlock) {
+                    pushInst("", "J", ifName+"end")
+                    main.push(ifName+"else")
+                    walk(elseBlock)
+                    pushInst(ifName+"end", "TIO", "")
+                } else {
+                    main.push(ifName+"else")
+                }
+            },
             FunctionDef() {
                 const funcName = "fn"+getVarName(anonFuncs++)
 

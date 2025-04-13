@@ -126,3 +126,22 @@ Deno.test("while", async () => {
         "ABCD",
     )
 })
+
+Deno.test("if", async () => {
+    assertEquals(
+        await run(`
+            a = 12
+            if (a == 12) {
+                print("yes")
+            } else {
+                print("no")
+            }
+            if (a == 13) {
+                print("ooo")
+            } else {
+                print("xxx")
+            }
+        `),
+        "yesxxx",
+    )
+})
