@@ -31,6 +31,7 @@ Deno.test("func call", async () => {
         await run(`
             fun hi() {
                 "Hello, World!"
+                "Hello, World!"
             }
             fun myprint(str) {
                 print(str)
