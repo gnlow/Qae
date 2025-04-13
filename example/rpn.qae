@@ -3,14 +3,25 @@ len = 0
 
 c = readchar()
 
-fun push(x) {
+fun spush(x) {
     stack[len*3] = x
     len = len + 1
 }
-
-fun pop() {
+fun spop() {
     len = len - 1
     stack[len*3]
+}
+
+out = resw(20)
+olen = 0
+
+fun opush(x) {
+    out[olen*3] = x
+    olen = olen + 1
+}
+fun opop() {
+    olen = olen - 1
+    out[olen*3]
 }
 
 fun prec(op) {
@@ -21,16 +32,27 @@ fun prec(op) {
 
 while (c != 10) {
     if ('0' < c && c < '9') {
-        printchar(c)
+        opush(c)
     } else {
         while (len > 0 && prec(stack[(len-1)*3]) >= prec(c) ) {
-            printchar(pop())
+            opush(spop())
         }
-        push(c)
+        spush(c)
     }
     c = readchar()
 }
 
 while (len > 0) {
-    printchar(pop())
+    opush(spop())
 }
+
+fun myprint(s) {
+    i = 0
+    while (s[i*3] != ';') {
+        printchar(s[i*3])
+        i = i + 1
+    }
+}
+
+opush(';')
+myprint(out)

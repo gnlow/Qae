@@ -33,8 +33,8 @@ Deno.test("calc", async () => {
     assertEquals(
         await run(
             await Deno.readTextFile("example/rpn.qae"),
-            "2+3*5\n",
+            "6+2*3-1\n",
         ),
-        "235*+",
+        "623*+1-",
     )
 })

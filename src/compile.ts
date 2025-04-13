@@ -54,6 +54,13 @@ export const compile =
         table.push(`${getVarName(table.length)}\t${str}`)
     }
 
+    const defSymbol =
+    (id: string) => {
+        if (!table.find(x => x.startsWith(`${id}\t`))) {
+            table.push(`${id}\tRESW\t1`)
+        }
+    }
+
     let anonFuncs = 0
     let labels = 0
 
@@ -71,9 +78,7 @@ export const compile =
                     popRef("qqtemp")
                 }
                 const value = walk(node.node.getChild("Expression")!)
-                if (!table.find(x => x.startsWith(`${id}\t`))) {
-                    table.push(`${id}\tRESW\t1`)
-                }
+                defSymbol(id)
                 pushRef(value)
                 if (atNode) {
                     popRef("@qqtemp")
@@ -123,7 +128,7 @@ export const compile =
                 const funcNameNode = node.node.getChild("FuncName")
                 if (funcNameNode) {
                     const alias = walk(funcNameNode)!
-                    table.push(`${alias}\tRESW\t1`)
+                    defSymbol(alias)
                     pushInst("", "LDA", "#"+funcName)
                     pushInst("", "STA", alias)
                 }
@@ -136,7 +141,7 @@ export const compile =
                 params.forEach(param => {
                     popRef(param!)
 
-                    table.push(`${param!}\tRESW\t1`)
+                    defSymbol(param!)
                 })
                 walk(node.node.getChild("Block")!)
 
