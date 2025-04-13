@@ -1,0 +1,6 @@
+{
+    "imports": {
+        "@lezer/lr": "https://esm.sh/@lezer/lr@1.4.2"
+    },
+    "lock": false
+}
