@@ -40,7 +40,7 @@ jobs:
       - name: Download SicTools
         run: |
           mkdir -p ~/Downloads/
-          curl -o ~/Downloads/sictools.jar https://github.com/jurem/SicTools/releases/download/v2.2.0/sictools.jar
+          curl -L -o ~/Downloads/sictools.jar https://github.com/jurem/SicTools/releases/download/v2.2.0/sictools.jar
 
       # Uncomment this step to verify the use of 'deno fmt' on each commit.
       # - name: Verify formatting
