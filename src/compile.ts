@@ -3,6 +3,7 @@ import {
     SyntaxNode,
 } from "https://esm.sh/@lezer/common@1.2.3"
 import { parser } from "./parser.js"
+import { Stack } from "https://esm.sh/@lezer/lr@1.4.2/dist/index.d.ts";
 
 const getVarName =
 (n: number) => {
@@ -31,8 +32,9 @@ export const compile =
     const table: string[] = []
 
     const pushInst =
-    (label: string, op: string, param: string) => {
-        main.push(label+"\t"+op+"\t"+param)
+    (label: string, op: string, param: string, comment = "") => {
+        main.push(label+"\t"+op+"\t"+param+
+            (comment ? ("\t. "+comment) : ""))
     }
 
     const pushRef =
@@ -61,6 +63,11 @@ export const compile =
         }
     }
 
+    const comment =
+    (node: SyntaxNodeRef | SyntaxNode) => {
+        main.push("\n\t. "+code.slice(node.from, node.to).trim().replaceAll("\n", "\n\t. "))
+    }
+
     let anonFuncs = 0
     let labels = 0
 
@@ -68,6 +75,7 @@ export const compile =
     (node: SyntaxNodeRef | SyntaxNode): string | undefined => {
         return (({
             Assignment() {
+                comment(node)
                 const id = walk(node.node.getChild("Identifier")!)!
                 const atNode = node.node.getChild("At")
                 if (atNode) {
@@ -87,6 +95,7 @@ export const compile =
                 }
             },
             WhileStatement() {
+                comment(node)
                 const loopName = "loop"+getVarName(labels++)
                 main.push(loopName)
                 const cond = walk(node.node.getChild("Expression")!)
@@ -101,6 +110,7 @@ export const compile =
                 pushInst(loopName+"end", "FLOAT", "")
             },
             IfStatement() {
+                comment(node)
                 const ifName = "block"+getVarName(labels++)
 
                 const [ifBlock, elseBlock] = node.node.getChildren("Block")!
@@ -123,6 +133,7 @@ export const compile =
                 }
             },
             FunctionDef() {
+                comment(node)
                 const funcName = "fn"+getVarName(anonFuncs++)
 
                 const funcNameNode = node.node.getChild("FuncName")
@@ -151,6 +162,7 @@ export const compile =
                 return "#"+funcName
             },
             FunctionCall() {
+                comment(node)
                 const [funcNode, ...children] = node.node.getChildren("Expression")
                 const funcName = walk(funcNode!)
                 children.map(param => {
