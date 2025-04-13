@@ -1,6 +1,6 @@
 IFS=
 code=$(cat)
-file=$(mktemp XXXXXX.temp.sic.asm)
+file=$(mktemp temp/XXXXXX.sic.asm)
 echo $code > $file
 
 java -cp ~/Downloads/sictools.jar sic.VM $file

@@ -3,7 +3,7 @@ import {
     SyntaxNode,
 } from "https://esm.sh/@lezer/common@1.2.3"
 import { parser } from "./parser.js"
-import { Block, Expression, ExpressionStatement, Program, Statement } from "./parser.terms.js";
+import { Assignment, Block, Expression, ExpressionStatement, Program, Statement } from "./parser.terms.js";
 
 const getVarName =
 (n: number) => {
@@ -44,6 +44,12 @@ export const compile =
         }
     }
 
+    const popRef =
+    (ref: string) => {
+        pushInst("", "JSUB", "pop")
+        pushInst("", "STA", ref)
+    }
+
     const addSymbol =
     (str: string) => {
         table.push(`${getVarName(table.length)}\t${str}`)
@@ -52,6 +58,13 @@ export const compile =
     const walk =
     (node: SyntaxNodeRef | SyntaxNode): string | undefined => {
         return (({
+            Assignment() {
+                const id = walk(node.node.getChild("Identifier")!)!
+                const value = walk(node.node.getChild("Expression")!)
+                table.push(`${id}\tRESW\t1`)
+                pushRef(value)
+                popRef(id)
+            },
             FunctionDef() {
                 const [funcName, ...params] = node.node.getChildren("Identifier").map(walk)
 
@@ -60,8 +73,7 @@ export const compile =
                 main.push(funcName!)
 
                 params.forEach(param => {
-                    pushInst("", "JSUB", "pop")
-                    pushInst("", "STA", param!)
+                    popRef(param!)
 
                     table.push(`${param!}\tRESW\t1`)
                 })
