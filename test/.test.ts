@@ -92,3 +92,14 @@ Deno.test("at", async () => {
         "KLM",
     )
 })
+
+Deno.test("lambda", async () => {
+    assertEquals(
+        await run(`
+            f = fun() {"ABC"}
+            f = fun() {"KLM"}
+            print(f())
+        `),
+        "KLM",
+    )
+})

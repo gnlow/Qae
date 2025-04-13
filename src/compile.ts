@@ -81,10 +81,15 @@ export const compile =
                 }
             },
             FunctionDef() {
+                const funcName = "fn"+getVarName(anonFuncs++)
+
                 const funcNameNode = node.node.getChild("FuncName")
-                const funcName = funcNameNode
-                    ? walk(funcNameNode)
-                    : "fn"+getVarName(anonFuncs++)
+                if (funcNameNode) {
+                    const alias = walk(funcNameNode)!
+                    table.push(`${alias}\tRESW\t1`)
+                    pushInst("", "LDA", "#"+funcName)
+                    pushInst("", "STA", alias)
+                }
                 const params = node.node.getChildren("Identifier").map(walk)
 
                 pushInst("", "J", funcName+"end")
@@ -119,7 +124,14 @@ export const compile =
 
                 params.forEach(pushRef)
                 pushInst("", "JSUB", "pushr")
-                pushInst("", "JSUB", funcName!)
+                if ([
+                    "print",
+                    "printchar",
+                ].includes(funcName!)) {
+                    pushInst("", "JSUB", funcName!)
+                } else {
+                    pushInst("", "JSUB", ("@"+funcName!).replace("@#", ""))
+                }
             },
             BinaryExpression() {
                 const opNode = node.node.getChild("Op")!
