@@ -28,7 +28,8 @@ IfStatement {
 }
 
 Assignment {
-  Identifier "=" Expression
+  Identifier (At { "[" Expression "]" })?
+  "=" Expression
 }
 
 ExpressionStatement {
@@ -43,9 +44,13 @@ Expression {
   FunctionCall |
   BinaryExpression |
   String |
-  Identifier |
+  IdentifierExpression |
   Number |
   "(" Expression ")"
+}
+
+IdentifierExpression {
+  Identifier (At { "[" Expression "]" })?
 }
 
 CompareOp { "<" | "<=" | ">" | ">=" | "==" | "!=" }
@@ -83,6 +88,8 @@ FunctionCall {
   rparen { ")" }
   lbrace { "{" }
   rbrace { "}" }
+  lsq { "[" }
+  rsq { "]" }
 }
 
 @skip { space }

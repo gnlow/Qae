@@ -3,7 +3,6 @@ import {
     SyntaxNode,
 } from "https://esm.sh/@lezer/common@1.2.3"
 import { parser } from "./parser.js"
-import { Assignment, BinaryExpression, Block, Expression, ExpressionStatement, Program, Statement } from "./parser.terms.js";
 
 const getVarName =
 (n: number) => {
@@ -60,10 +59,24 @@ export const compile =
         return (({
             Assignment() {
                 const id = walk(node.node.getChild("Identifier")!)!
+                const atNode = node.node.getChild("At")
+                if (atNode) {
+                    pushRef(id)
+                    pushRef(walk(atNode))
+                    pushInst("", "JSUB", "pushr")
+                    pushInst("", "JSUB", "qadd")
+                    popRef("qtemp")
+                }
                 const value = walk(node.node.getChild("Expression")!)
-                table.push(`${id}\tRESW\t1`)
+                if (!table.find(x => x.startsWith(`${id}\t`))) {
+                    table.push(`${id}\tRESW\t1`)
+                }
                 pushRef(value)
-                popRef(id)
+                if (atNode) {
+                    popRef("@qtemp")
+                } else {
+                    popRef(id)
+                }
             },
             FunctionDef() {
                 const [funcName, ...params] = node.node.getChildren("Identifier").map(walk)
@@ -119,9 +132,22 @@ export const compile =
             ExpressionStatement() {
                 pushRef(walk(node.node.firstChild!))
             },
+            IdentifierExpression() {
+                const id = code.slice(node.from, node.to)
+                const atNode = node.node.getChild("At")
+                if (atNode) {
+                    pushRef(id)
+                    pushRef(walk(atNode))
+                    pushInst("", "JSUB", "pushr")
+                    pushInst("", "JSUB", "qadd")
+                    popRef("qtemp")
+                    return "@qtemp"
+                }
+                return id
+            },
             Identifier() {
-                const content = code.slice(node.from, node.to)
-                return content
+                const id = code.slice(node.from, node.to)
+                return id
             },
             Number() {
                 const content = code.slice(node.from, node.to)

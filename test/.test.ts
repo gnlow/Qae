@@ -69,3 +69,18 @@ Deno.test("arithmetic", async () => {
         "K",
     )
 })
+
+Deno.test("at", async () => {
+    assertEquals(
+        await run(`
+            hi = resw(10)
+            hi[0] = 75
+            hi[3] = 76
+            hi[6] = 77
+            printchar(hi[0])
+            printchar(hi[3])
+            printchar(hi[6])
+        `),
+        "KLM",
+    )
+})

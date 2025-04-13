@@ -22,6 +22,7 @@ pcloop	TD	#1
 	J	popr
 
 ... stdlib ...
+qtemp	RESW	1
 myst	RESW	100
 
 ...
