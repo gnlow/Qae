@@ -27,4 +27,16 @@ Deno.test("func call", async () => {
         `),
         "Hello, World!",
     )
+    assertEquals(
+        await run(`
+            fun hi() {
+                "Hello, World!"
+            }
+            fun myprint(str) {
+                print(str)
+            }
+            myprint(hi())
+        `),
+        "Hello, World!",
+    )
 })

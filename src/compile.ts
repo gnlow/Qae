@@ -54,9 +54,17 @@ export const compile =
         return (({
             FunctionDef() {
                 const [funcName, ...params] = node.node.getChildren("Identifier").map(walk)
+
                 pushInst("", "J", funcName+"end")
+
                 main.push(funcName!)
 
+                params.forEach(param => {
+                    pushInst("", "JSUB", "pop")
+                    pushInst("", "STA", param!)
+
+                    table.push(`${param!}\tRESW\t1`)
+                })
                 walk(node.node.getChild("Block")!)
 
                 pushInst("", "JSUB", "popr")
@@ -74,9 +82,6 @@ export const compile =
             },
             Identifier() {
                 const content = code.slice(node.from, node.to)
-                if (node.node.parent?.name == "Expression") {
-                    main.push(content)
-                }
                 return content
             },
             String() {
