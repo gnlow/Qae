@@ -183,6 +183,7 @@ export const compile =
                     "+": "qadd",
                     "-": "qsub",
                     "*": "qmul",
+                    "/": "qdiv",
                     "==": "qeq",
                     "!=": "qneq",
                     "<": "qlt",

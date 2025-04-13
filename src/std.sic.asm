@@ -72,6 +72,13 @@ qmul	JSUB	qqpop
 	JSUB	qqpush
 	J	qqpopr
 
+qdiv	JSUB	qqpop
+	STA	qqqb
+	JSUB	qqpop
+	DIV	qqqb
+	JSUB	qqpush
+	J	qqpopr
+
 qo	LDA	#1
 	JSUB	qqpush
 	J	qqpopr
