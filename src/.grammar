@@ -18,7 +18,7 @@ Statement {
 }
 
 FunctionDef {
-  kw<"fun"> Identifier "(" (Identifier ("," Identifier)*)? ")" Block
+  kw<"fun"> FuncName { Identifier }? "(" (Identifier ("," Identifier)*)? ")" Block
 }
 
 IfStatement {
@@ -27,7 +27,7 @@ IfStatement {
 }
 
 Assignment {
-  Identifier (At { "[" Expression "]" })?
+  Identifier At { "[" Expression "]" }?
   "=" Expression
 }
 
@@ -50,7 +50,7 @@ Expression {
 }
 
 IdentifierExpression {
-  Identifier (At { "[" Expression "]" })?
+  Identifier At { "[" Expression "]" }?
 }
 
 CompareOp { "<" | "<=" | ">" | ">=" | "==" | "!=" }

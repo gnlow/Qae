@@ -54,6 +54,8 @@ export const compile =
         table.push(`${getVarName(table.length)}\t${str}`)
     }
 
+    let anonFuncs = 0
+
     const walk =
     (node: SyntaxNodeRef | SyntaxNode): string | undefined => {
         return (({
@@ -79,7 +81,11 @@ export const compile =
                 }
             },
             FunctionDef() {
-                const [funcName, ...params] = node.node.getChildren("Identifier").map(walk)
+                const funcNameNode = node.node.getChild("FuncName")
+                const funcName = funcNameNode
+                    ? walk(funcNameNode)
+                    : "fn"+getVarName(anonFuncs++)
+                const params = node.node.getChildren("Identifier").map(walk)
 
                 pushInst("", "J", funcName+"end")
 
