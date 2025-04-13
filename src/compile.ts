@@ -3,6 +3,7 @@ import {
     SyntaxNode,
 } from "https://esm.sh/@lezer/common@1.2.3"
 import { parser } from "./parser.js"
+import { ExpressionStatement, Statement } from "./parser.terms.js";
 
 const getVarName =
 (n: number) => {
@@ -39,9 +40,24 @@ export const compile =
         table.push(`${getVarName(table.length)}\t${str}`)
     }
 
-    const terminal =
-    (node: SyntaxNodeRef | SyntaxNode) => {
+    const walk =
+    (node: SyntaxNodeRef | SyntaxNode): string | undefined => {
         return ({
+            FunctionCall() {
+                const funcName = walk(node.node.getChild("Identifier")!)!
+                const params = node.node.getChildren("Expression").map(walk)
+
+                params.forEach(param => {
+                    if (param) {
+                        pushInst("", "LDA", param)
+                        pushInst("", "JSUB", "push")
+                    }
+                })
+                pushInst("", "JSUB", "pushr")
+                pushInst("", "JSUB", funcName)
+
+                return ""
+            },
             Identifier() {
                 const content = code.slice(node.from, node.to)
                 if (node.node.parent?.name == "Expression") {
@@ -58,28 +74,13 @@ export const compile =
                 return "#"+varName
             },
             Expression() {
-                return terminal(node.node.firstChild!)
+                return walk(node.node.firstChild!)
             }
-        } as Record<string, () => string>)[node.name]?.()
+        } as Record<string, () => string | undefined>)[node.name]?.()
+        || walk(node.node.firstChild!)
     }
 
-    tree.iterate({
-        enter(node) {
-            ({
-                FunctionCall() {
-                    const funcName = terminal(node.node.getChild("Identifier")!)
-                    const params = node.node.getChildren("Expression").map(terminal)
-
-                    params.forEach(param => {
-                        pushInst("", "LDA", param)
-                        pushInst("", "JSUB", "push")
-                    })
-                    pushInst("", "JSUB", "pushr")
-                    pushInst("", "JSUB", funcName)
-                }
-            } as Record<string, () => void>)[node.name]?.()
-        },
-    })
+    walk(tree.topNode)
 
     return [
         "prog\tSTART\t0",
