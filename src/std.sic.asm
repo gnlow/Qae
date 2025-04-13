@@ -47,18 +47,21 @@ qadd	JSUB	pop
 	STA	qqqb
 	JSUB	pop
 	ADD	qqqb
+	JSUB	push
 	J	popr
 
 qsub	JSUB	pop
 	STA	qqqb
 	JSUB	pop
 	SUB	qqqb
+	JSUB	push
 	J	popr
 
 qmul	JSUB	pop
 	STA	qqqb
 	JSUB	pop
 	MUL	qqqb
+	JSUB	push
 	J	popr
 
 qqqb	RESW	1

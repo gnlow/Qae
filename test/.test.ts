@@ -60,3 +60,12 @@ Deno.test("number", async () => {
         "K",
     )
 })
+
+Deno.test("arithmetic", async () => {
+    assertEquals(
+        await run(`
+            printchar(30+45)
+        `),
+        "K",
+    )
+})

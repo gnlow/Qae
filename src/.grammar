@@ -2,7 +2,11 @@
 
 @precedence {
   call,
-  equal @left
+
+  times @left,
+  plus @left,
+
+  rel @left
 }
 
 kw<term> { @specialize[@name={term}]<Identifier, term> }
@@ -44,8 +48,12 @@ Expression {
   "(" Expression ")"
 }
 
+CompareOp { "<" | "<=" | ">" | ">=" | "==" | "!=" }
+
 BinaryExpression {
-  Expression !equal "==" Expression
+  Expression !times Op { "/" | "%" | "*" } Expression |
+  Expression !plus Op { "+" | "-" } Expression |
+  Expression !rel Op { CompareOp } Expression
 }
 
 FunctionCall {
