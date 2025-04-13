@@ -14,3 +14,17 @@ Deno.test("echo", async () => {
         "Hello, World!",
     )
 })
+
+Deno.test("prec", async () => {
+    assertEquals(
+        await run(`
+            fun prec(op) {
+                if (op == '+') { 1 }
+                if (op == '-') { 1 }
+                if (op == '*') { 2 }
+            }
+            printchar(65+prec('-'))
+        `),
+        "B",
+    )
+})
