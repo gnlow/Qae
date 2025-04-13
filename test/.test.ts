@@ -40,6 +40,14 @@ Deno.test("func call", async () => {
         `),
         "Hello, World!",
     )
+    assertEquals(
+        await run(`
+            print(fun hi() {
+                "Hello, World!"
+            } ())
+        `),
+        "Hello, World!",
+    )
 })
 
 Deno.test("assign variable", async () => {
