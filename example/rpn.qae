@@ -69,5 +69,17 @@ while (out[i*3] != ';') {
     i = i + 1
 }
 
+fun printnum(n) {
+    if (n / 100 > 0) {
+        printchar(n / 100 + '0')
+    }
+    n = n - n / 100 * 100
+    if (n / 10 > 0) {
+        printchar(n / 10 + '0')
+    }
+    n = n - n / 10 * 10
+    printchar(n + '0')
+}
+
 printchar(10)
-printchar(spop() + '0')
+printnum(spop())

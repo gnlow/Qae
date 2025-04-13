@@ -16,7 +16,7 @@ const getVarName =
 }
 
 const init =
-`	LDA	#qqmyst
+`	+LDA	#qqmyst
 	JSUB	stinit
 	JSUB	stinitr`
 
@@ -153,7 +153,9 @@ export const compile =
             FunctionCall() {
                 const [funcNode, ...children] = node.node.getChildren("Expression")
                 const funcName = walk(funcNode!)
-                const params = children.map(walk)
+                children.map(param => {
+                    pushRef(walk(param))
+                })
 
                 if (funcName == "resw" || funcName == "resb") {
                     const child = children[0]!
@@ -163,8 +165,6 @@ export const compile =
 
                     return "#"+varName
                 }
-
-                params.forEach(pushRef)
                 pushInst("", "JSUB", "qqpushr")
                 if ([
                     "print",
@@ -194,9 +194,9 @@ export const compile =
                     "||": "qor",
                 }[op]!
 
-                const params = node.node.getChildren("Expression").map(walk)
-
-                params.forEach(pushRef)
+                node.node.getChildren("Expression").map(param => {
+                    pushRef(walk(param))
+                })
                 pushInst("", "JSUB", "qqpushr")
                 pushInst("", "JSUB", funcName)
             },

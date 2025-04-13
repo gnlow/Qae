@@ -88,6 +88,18 @@ Deno.test("arithmetic", async () => {
         `),
         "2",
     )
+    assertEquals(
+        await run(`
+            printchar('5'+3-2*2)
+        `),
+        "4",
+    )
+    assertEquals(
+        await run(`
+            printchar(1*6/3-2+4/3+'0')
+        `),
+        "1",
+    )
 })
 
 Deno.test("at", async () => {
