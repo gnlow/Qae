@@ -3,7 +3,7 @@ import {
     SyntaxNode,
 } from "https://esm.sh/@lezer/common@1.2.3"
 import { parser } from "./parser.js"
-import { ExpressionStatement, Statement } from "./parser.terms.js";
+import { Block, Expression, ExpressionStatement, Program, Statement } from "./parser.terms.js";
 
 const getVarName =
 (n: number) => {
@@ -27,12 +27,21 @@ export const compile =
 (code: string) => {
     const tree = parser.parse(code)
     
-    const stack: string[] = []
+    const main: string[] = []
+    const funcs: string[] = []
     const table: string[] = []
 
     const pushInst =
     (label: string, op: string, param: string) => {
-        stack.push(label+"\t"+op+"\t"+param)
+        main.push(label+"\t"+op+"\t"+param)
+    }
+
+    const pushRef =
+    (ref: string | undefined) => {
+        if (ref) {
+            pushInst("", "LDA", ref)
+            pushInst("", "JSUB", "push")
+        }
     }
 
     const addSymbol =
@@ -42,26 +51,31 @@ export const compile =
 
     const walk =
     (node: SyntaxNodeRef | SyntaxNode): string | undefined => {
-        return ({
+        return (({
+            FunctionDef() {
+                const [funcName, ...params] = node.node.getChildren("Identifier").map(walk)
+                pushInst("", "J", funcName+"end")
+                main.push(funcName!)
+
+                walk(node.node.getChild("Block")!)
+
+                pushInst("", "JSUB", "popr")
+                main.push(funcName+"end")
+            },
             FunctionCall() {
                 const funcName = walk(node.node.getChild("Identifier")!)!
                 const params = node.node.getChildren("Expression").map(walk)
-
-                params.forEach(param => {
-                    if (param) {
-                        pushInst("", "LDA", param)
-                        pushInst("", "JSUB", "push")
-                    }
-                })
+                params.forEach(pushRef)
                 pushInst("", "JSUB", "pushr")
                 pushInst("", "JSUB", funcName)
-
-                return ""
+            },
+            ExpressionStatement() {
+                pushRef(walk(node.node.firstChild!))
             },
             Identifier() {
                 const content = code.slice(node.from, node.to)
                 if (node.node.parent?.name == "Expression") {
-                    stack.push(content)
+                    main.push(content)
                 }
                 return content
             },
@@ -73,11 +87,16 @@ export const compile =
                 }
                 return "#"+varName
             },
-            Expression() {
-                return walk(node.node.firstChild!)
+            Block() {
+                node.node.getChildren("Statement").forEach(walk)
+            },
+            Program() {
+                node.node.getChildren("Statement").forEach(walk)
             }
-        } as Record<string, () => string | undefined>)[node.name]?.()
-        || walk(node.node.firstChild!)
+        } as Record<string, () => string | undefined>)[node.name]
+        || (() => {
+            return walk(node.node.firstChild!)
+        }))()
     }
 
     walk(tree.topNode)
@@ -86,7 +105,7 @@ export const compile =
         "prog\tSTART\t0",
         init,
         "\n... main ...",
-        ...stack,
+        ...main,
         "halt\tJ\thalt",
         "\n... table ...",
         ...table,

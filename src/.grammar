@@ -15,7 +15,7 @@ Statement {
 }
 
 FunctionDef {
-  kw<"fun"> Identifier "(" (Expression ("," Expression)*)? ")" Block
+  kw<"fun"> Identifier "(" (Identifier ("," Identifier)*)? ")" Block
 }
 
 IfStatement {
