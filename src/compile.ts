@@ -94,12 +94,16 @@ export const compile =
 
                 pushInst("", "JSUB", "popr")
                 main.push(funcName+"end")
+
+                return "#"+funcName
             },
             FunctionCall() {
-                const funcName = walk(node.node.getChild("Identifier")!)!
+                const [funcNode, ...children] = node.node.getChildren("Expression")
+                const funcName = walk(funcNode!)
+                const params = children.map(walk)
 
                 if (funcName == "resw" || funcName == "resb") {
-                    const child = node.node.getChild("Expression")!
+                    const child = children[0]!
                     const size = Number(code.slice(child.from, child.to))
                     const varName = getVarName(table.length)
                     addSymbol(`${funcName.toUpperCase()}\t${size}`)
@@ -107,11 +111,9 @@ export const compile =
                     return "#"+varName
                 }
 
-                const params = node.node.getChildren("Expression").map(walk)
-
                 params.forEach(pushRef)
                 pushInst("", "JSUB", "pushr")
-                pushInst("", "JSUB", funcName)
+                pushInst("", "JSUB", funcName!)
             },
             BinaryExpression() {
                 const opNode = node.node.getChild("Op")!
