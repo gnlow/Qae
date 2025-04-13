@@ -114,7 +114,7 @@ export const compile =
                     walk(elseBlock)
                     pushInst(ifName+"end", "TIO", "")
                 } else {
-                    main.push(ifName+"else")
+                    pushInst(ifName+"else", "TIO", "")
                 }
             },
             FunctionDef() {
@@ -184,8 +184,8 @@ export const compile =
                     "<=": "qlte",
                     ">": "qgt",
                     ">=": "qgte",
-                    "&": "qand",
-                    "|": "qor",
+                    "&&": "qand",
+                    "||": "qor",
                 }[op]!
 
                 const params = node.node.getChildren("Expression").map(walk)

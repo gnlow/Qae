@@ -66,7 +66,7 @@ BinaryExpression {
   Expression !times Op { "/" | "%" | "*" } Expression |
   Expression !plus Op { "+" | "-" } Expression |
   Expression !rel Op { CompareOp } Expression |
-  Expression !logic Op { "&" | "|" } Expression
+  Expression !logic Op { "&&" | "||" } Expression
 }
 
 FunctionCall {
