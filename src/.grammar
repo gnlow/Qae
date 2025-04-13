@@ -49,6 +49,7 @@ Expression {
   FunctionCall |
   BinaryExpression |
   String |
+  Char |
   IdentifierExpression |
   Number |
   "(" Expression ")"
@@ -79,6 +80,17 @@ FunctionCall {
 @local tokens {
   stringEnd { "\"" }
   @else stringContent
+}
+
+@skip {} {
+  Char {
+    "'" charContent* charEnd
+  }
+}
+
+@local tokens {
+  charEnd { "'" }
+  @else charContent
 }
 
 @tokens {

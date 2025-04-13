@@ -155,3 +155,13 @@ Deno.test("read", async () => {
         "hi",
     )
 })
+
+Deno.test("char", async () => {
+    assertEquals(
+        await run(`
+            printchar('h')
+            printchar('i')
+        `),
+        "hi",
+    )
+})

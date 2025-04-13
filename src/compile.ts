@@ -179,6 +179,7 @@ export const compile =
                     "-": "qsub",
                     "*": "qmul",
                     "==": "qeq",
+                    "!=": "qneq",
                     "<": "qlt",
                     "<=": "qlte",
                     ">": "qgt",
@@ -222,6 +223,11 @@ export const compile =
                     addSymbol(`BYTE\tC'${content};'`)
                 }
                 return "#"+varName
+            },
+            Char() {
+                const content = code.slice(node.from+1, node.to-1)[0]
+
+                return "#"+content.charCodeAt(0)
             },
             Block() {
                 node.node.getChildren("Statement").forEach(walk)

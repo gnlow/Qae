@@ -86,6 +86,13 @@ qeq	JSUB	qqpop
 	JEQ	qo
 	J	qx
 
+qneq	JSUB	qqpop
+	STA	qqqb
+	JSUB	qqpop
+	COMP	qqqb
+	JEQ	qx
+	J	qo
+
 qlt	JSUB	qqpop
 	STA	qqqb
 	JSUB	qqpop
