@@ -3,7 +3,7 @@ import {
     SyntaxNode,
 } from "https://esm.sh/@lezer/common@1.2.3"
 import { parser } from "./parser.js"
-import { Assignment, Block, Expression, ExpressionStatement, Program, Statement } from "./parser.terms.js";
+import { Assignment, BinaryExpression, Block, Expression, ExpressionStatement, Program, Statement } from "./parser.terms.js";
 
 const getVarName =
 (n: number) => {
@@ -18,8 +18,8 @@ const getVarName =
 
 const init =
 `	LDA	#myst
-    JSUB	stinit
-    JSUB	stinitr`
+	JSUB	stinit
+	JSUB	stinitr`
 
 const std = await Deno.readTextFile("./src/std.sic.asm")
 
@@ -100,12 +100,32 @@ export const compile =
                 pushInst("", "JSUB", "pushr")
                 pushInst("", "JSUB", funcName)
             },
+            BinaryExpression() {
+                const opNode = node.node.getChild("Op")!
+                const op = code.slice(opNode.from, opNode.to)
+                const funcName = {
+                    "+": "qadd",
+                    "-": "qsub",
+                    "*": "qmul",
+                    "==": "qeq",
+                }[op]!
+
+                const params = node.node.getChildren("Expression").map(walk)
+
+                params.forEach(pushRef)
+                pushInst("", "JSUB", "pushr")
+                pushInst("", "JSUB", funcName)
+            },
             ExpressionStatement() {
                 pushRef(walk(node.node.firstChild!))
             },
             Identifier() {
                 const content = code.slice(node.from, node.to)
                 return content
+            },
+            Number() {
+                const content = code.slice(node.from, node.to)
+                return "#"+content
             },
             String() {
                 const content = code.slice(node.from+1, node.to-1)

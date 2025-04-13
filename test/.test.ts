@@ -51,3 +51,12 @@ Deno.test("assign variable", async () => {
         "Hello, World!",
     )
 })
+
+Deno.test("number", async () => {
+    assertEquals(
+        await run(`
+            printchar(75)
+        `),
+        "K",
+    )
+})

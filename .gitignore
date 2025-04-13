@@ -1,6 +1,6 @@
 parser.js
 parser.terms.js
 
-*.temp.sic.asm
+temp/
 
 temp.ts

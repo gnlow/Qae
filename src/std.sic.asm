@@ -14,8 +14,16 @@ ploop	TD	#1
 
 prp	RESW	1
 
+printchar
+	JSUB	pop
+pcloop	TD	#1
+	JEQ	pcloop
+	WD	#1
+	J	popr
+
 ... stdlib ...
 myst	RESW	100
+
 ...
 stinit	STA	sp
 	RSUB
@@ -33,6 +41,27 @@ pop	LDA	sp
 	RSUB
 
 sp	RESW	1
+
+...
+qadd	JSUB	pop
+	STA	qqqb
+	JSUB	pop
+	ADD	qqqb
+	J	popr
+
+qsub	JSUB	pop
+	STA	qqqb
+	JSUB	pop
+	SUB	qqqb
+	J	popr
+
+qmul	JSUB	pop
+	STA	qqqb
+	JSUB	pop
+	MUL	qqqb
+	J	popr
+
+qqqb	RESW	1
 
 ...
 stinitr	LDA	#retadr
