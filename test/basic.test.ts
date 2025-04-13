@@ -28,3 +28,13 @@ Deno.test("prec", async () => {
         "B",
     )
 })
+
+Deno.test("calc", async () => {
+    assertEquals(
+        await run(
+            await Deno.readTextFile("example/rpn.qae"),
+            "2+3*5\n",
+        ),
+        "235*+",
+    )
+})

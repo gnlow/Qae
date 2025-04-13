@@ -93,7 +93,7 @@ export const compile =
                 walk(node.node.getChild("Block")!)
 
                 pushInst("", "J", loopName)
-                pushInst(loopName+"end", "TIO", "")
+                pushInst(loopName+"end", "FLOAT", "")
             },
             IfStatement() {
                 const ifName = "block"+getVarName(labels++)
@@ -110,11 +110,11 @@ export const compile =
 
                 if (elseBlock) {
                     pushInst("", "J", ifName+"end")
-                    main.push(ifName+"else")
+                    pushInst(ifName+"else", "FLOAT", "")
                     walk(elseBlock)
-                    pushInst(ifName+"end", "TIO", "")
+                    pushInst(ifName+"end", "FLOAT", "")
                 } else {
-                    pushInst(ifName+"else", "TIO", "")
+                    pushInst(ifName+"else", "FLOAT", "")
                 }
             },
             FunctionDef() {
